@@ -8,10 +8,21 @@ const failures = [];
 if (!html.includes("/mars-rover-kata/assets/")) {
   failures.push("built assets are not rooted at /mars-rover-kata/");
 }
-if (/["']\/assets\//.test(html)) {
+const rootAssetReferences = [
+  'src="/assets/',
+  "src='/assets/",
+  'href="/assets/',
+  "href='/assets/",
+];
+if (rootAssetReferences.some((reference) => html.includes(reference))) {
   failures.push("a root-level /assets reference would break on project Pages");
 }
-if (/fonts\.googleapis\.com|fonts\.gstatic\.com|cdn\.jsdelivr\.net/.test(html)) {
+const runtimeCdnHosts = [
+  "fonts.googleapis.com",
+  "fonts.gstatic.com",
+  "cdn.jsdelivr.net",
+];
+if (runtimeCdnHosts.some((host) => html.includes(host))) {
   failures.push("the build contains a runtime CDN dependency");
 }
 if (!html.includes("Content-Security-Policy")) {
