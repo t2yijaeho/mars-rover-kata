@@ -1,0 +1,31 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node and browser tooling
+node_modules/
+web/dist/
+playwright-report/
+test-results/
+.playwright-cli/
+.playwright-mcp/
+
+# Generated artifacts and logs
+output/
+*.log
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

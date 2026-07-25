@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mars Rover Maintenance"
+  short_description: "Maintain and release the Mars Rover KATA"
+  default_prompt: "Use $maintain-mars-rover to verify and prepare this Mars Rover change."

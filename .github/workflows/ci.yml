@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.10.11"
+          enable-cache: true
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version-file: ".python-version"
+      - name: Install locked Python environment
+        run: uv sync --locked
+      - name: Lint
+        run: uv run ruff check .
+      - name: Test
+        run: uv run pytest
+      - name: Static security analysis
+        run: uv run bandit -c pyproject.toml -r src
+      - name: Audit Python dependencies
+        run: uv run pip-audit
+
+  dashboard:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install locked dashboard dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test
+      - name: Audit npm dependencies
+        run: npm audit --audit-level=high
+      - name: Build GitHub Pages artifact
+        run: npm run build:pages
+      - name: Verify Pages paths
+        run: npm run verify:pages
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests
+        run: npm run test:e2e
+  release-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Scan tracked files and whitespace
+        shell: python
+        run: |
+          import importlib.util
+          from pathlib import Path
+          path = Path(".agents/skills/maintain-mars-rover/scripts/check_release.py")
+          spec = importlib.util.spec_from_file_location("release_check", path)
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          module.scan_tracked_files()

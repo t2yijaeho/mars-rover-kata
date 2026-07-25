@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mars Dashboard Verification"
+  short_description: "Verify the Mars dashboard and Pages build"
+  default_prompt: "Use $verify-mars-dashboard to validate the Mars dashboard across supported layouts."

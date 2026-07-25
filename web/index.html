@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+  >
+  <meta name="description" content="Explore a randomized Mars sector in this interactive Mars Rover KATA.">
+  <title>Mars Exploration Mission</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2230%22%20fill%3D%22%23ff825f%22%2F%3E%3Cpath%20d%3D%22M18%2044%20L32%2012%2046%2044%2032%2036%20Z%22%20fill%3D%22%23120f15%22%2F%3E%3C%2Fsvg%3E">
+</head>
+<body>
+  <main class="mission-shell">
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">Mars Rover KATA / Exploration Mode</p>
+        <h1>Chart the red frontier.</h1>
+        <p class="subtitle">A randomized sector is ready. Use the arrow keys to explore every tile that the rover can reach. Obstacles and map edges cost fuel.</p>
+      </div>
+      <div class="masthead-actions">
+        <span class="system-chip"><span class="system-chip__bars" aria-hidden="true"><span></span><span></span><span></span></span>Navigation systems ready</span>
+        <div class="holo-card" aria-hidden="true">
+          <canvas id="mission-hologram"></canvas>
+          <div class="holo-card__sweep"></div>
+          <span class="holo-card__label">3D NAV LINK</span>
+        </div>
+        <button class="btn btn--primary" id="new-map" type="button"><span class="btn__label">New Map</span></button>
+      </div>
+    </header>
+
+    <section class="mission-grid" aria-label="Mars exploration mission">
+      <section class="panel panel--map" aria-labelledby="map-heading">
+        <div class="map-meta">
+          <h2 class="panel__title" id="map-heading">Sector Grid</h2>
+          <span class="coordinates" id="coordinates">X: 4 / Y: 4</span>
+        </div>
+        <div class="sector-controls" aria-label="Grid dimensions">
+          <span>Sector dimensions</span>
+          <label class="dimension-field">Width <input id="grid-width" type="number" min="4" max="16" value="8" inputmode="numeric"></label>
+          <label class="dimension-field">Height <input id="grid-height" type="number" min="4" max="16" value="8" inputmode="numeric"></label>
+          <button class="apply-grid" id="apply-grid" type="button">Apply</button>
+        </div>
+        <div class="map-stage scanlines">
+          <canvas id="mars-grid-3d" aria-label="Interactive 3D Mars terrain. Drag to orbit the camera and click an adjacent tile to move the rover."></canvas>
+          <div class="terrain-overlay" aria-hidden="true">
+            <span class="terrain-badge">3D terrain link</span>
+            <span class="terrain-hint" id="terrain-hint">Drag to orbit. Click an adjacent tile to move.</span>
+          </div>
+        </div>
+        <div class="map-board" id="map-board" role="grid" aria-label="Mars exploration grid screen reader fallback"></div>
+        <div class="legend" aria-label="Map legend">
+          <span class="legend-item"><i class="legend-item__swatch is-round is-rover"></i> Rover</span>
+          <span class="legend-item"><i class="legend-item__swatch is-explored"></i> Explored</span>
+          <span class="legend-item"><i class="legend-item__swatch is-pattern"></i> Obstacle</span>
+        </div>
+      </section>
+
+      <aside class="panel panel--side" aria-label="Mission controls and status">
+        <section class="panel__section">
+          <h2 class="panel__title">Mission telemetry</h2>
+          <div class="stat-list">
+            <div class="stat-row"><span class="stat-row__label">Fuel remaining</span><strong class="stat-row__value" id="fuel-value">100 / 100</strong></div>
+            <div class="fuel-meter" id="fuel-meter" aria-hidden="true"></div>
+            <div class="stat-row"><span class="stat-row__label">Explored</span><strong class="stat-row__value" id="explored-value">1 / 1</strong></div>
+          </div>
+          <div class="status-card" id="status-card" data-tone="neutral">
+            <span class="status-card__label">Mission status</span>
+            <p class="status-card__message" id="status-message" aria-live="polite">Ready</p>
+          </div>
+        </section>
+        <section class="panel__section">
+          <div class="autopilot-heading">
+            <h2 class="panel__title">Verified autopilot</h2>
+            <span class="system-chip"><span class="system-chip__bars" aria-hidden="true"><span></span><span></span><span></span></span>Live</span>
+          </div>
+          <p class="panel__body">Let the autopilot calculate and execute a collision-free route through unexplored reachable tiles.</p>
+          <button class="btn btn--autopilot" id="autopilot" type="button"><span class="btn__label" id="autopilot-label">Run Autopilot</span></button>
+          <p class="agent-state" id="agent-state" data-state="idle" aria-live="polite"><span class="agent-state__dot" aria-hidden="true"></span><span class="agent-state__text">Autopilot standing by.</span></p>
+        </section>
+        <section class="panel__section">
+          <h2 class="panel__title">Flight controls</h2>
+          <p class="panel__body">Each clear movement uses 1 fuel. A collision uses 10 fuel and keeps the rover in place.</p>
+          <div class="key-grid" aria-label="Use the arrow keys to move">
+            <kbd class="key-up">Up</kbd><kbd class="key-left">Left</kbd><kbd class="key-down">Down</kbd><kbd class="key-right">Right</kbd>
+          </div>
+          <p class="mission-complete-note" id="complete-note" hidden>Mission complete. Generate a new map to explore again.</p>
+        </section>
+      </aside>
+    </section>
+  </main>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

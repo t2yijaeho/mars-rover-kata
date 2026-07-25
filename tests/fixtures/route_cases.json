@@ -1,0 +1,70 @@
+[
+  {
+    "name": "two-by-two-detour",
+    "width": 2,
+    "height": 2,
+    "tiles": [
+      ["walkable", "walkable"],
+      ["obstacle", "walkable"]
+    ],
+    "rover": {"x": 0, "y": 0},
+    "fuel": 10,
+    "max_fuel": 100,
+    "explored": [{"x": 0, "y": 0}],
+    "expected_commands": ["ArrowRight", "ArrowDown"],
+    "expected_remaining": 0,
+    "expected_total": 3
+  },
+  {
+    "name": "straight-corridor",
+    "width": 3,
+    "height": 1,
+    "tiles": [
+      ["walkable", "walkable", "walkable"]
+    ],
+    "rover": {"x": 0, "y": 0},
+    "fuel": 5,
+    "max_fuel": 100,
+    "explored": [{"x": 0, "y": 0}],
+    "expected_commands": ["ArrowRight", "ArrowRight"],
+    "expected_remaining": 0,
+    "expected_total": 3
+  },
+  {
+    "name": "fuel-limited-corridor",
+    "width": 3,
+    "height": 1,
+    "tiles": [
+      ["walkable", "walkable", "walkable"]
+    ],
+    "rover": {"x": 0, "y": 0},
+    "fuel": 1,
+    "max_fuel": 100,
+    "explored": [{"x": 0, "y": 0}],
+    "expected_commands": ["ArrowRight"],
+    "expected_remaining": 1,
+    "expected_total": 3
+  },
+  {
+    "name": "branch-requires-backtracking",
+    "width": 3,
+    "height": 2,
+    "tiles": [
+      ["walkable", "walkable", "walkable"],
+      ["walkable", "obstacle", "walkable"]
+    ],
+    "rover": {"x": 0, "y": 0},
+    "fuel": 10,
+    "max_fuel": 100,
+    "explored": [{"x": 0, "y": 0}],
+    "expected_commands": [
+      "ArrowDown",
+      "ArrowUp",
+      "ArrowRight",
+      "ArrowRight",
+      "ArrowDown"
+    ],
+    "expected_remaining": 0,
+    "expected_total": 5
+  }
+]
